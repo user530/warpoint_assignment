@@ -12,3 +12,8 @@ export interface ITariff {
     paymentOptions: IPaymentOption[];
     baseCurrency: Currency;
 }
+
+export interface IFormField {
+    label?: string;
+    fieldId?: string;
+}

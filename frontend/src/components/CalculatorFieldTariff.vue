@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import type { ITariff } from '../shared/types';
+import type { IFormField, ITariff } from '../shared/types';
 import { tariffsData as tariffs } from '@/shared/data/tariffs';
 
 interface ITariffSelection extends Pick<ITariff, 'id' | 'name'> { }
 
-interface ITariffSelectProps {
+interface ITariffSelectProps extends IFormField {
     tariffsData: ITariffSelection[];
-    label?: string;
-    fieldId?: string;
 }
 
 // Component definitions
