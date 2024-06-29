@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import HeaderDefault from '@/components/HeaderDefault.vue';
 import FooterDefault from '@/components/FooterDefault.vue';
 </script>
@@ -6,11 +6,15 @@ import FooterDefault from '@/components/FooterDefault.vue';
 <template>
     <HeaderDefault />
 
-    <main>
+    <main class="growing-main">
         <slot></slot>
     </main>
 
     <FooterDefault />
 </template>
 
-<style scoped></style>
+<style scoped>
+.growing-main {
+    flex-grow: 1;
+}
+</style>

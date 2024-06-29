@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import CalculatorForm from '@/components/CalculatorForm.vue';
 import DefaultLayout from '../layouts/DefaultLayout.vue';
-
 </script>
 
 
 <template>
     <DefaultLayout>
-        <p>CALCULATOR</p>
+        <CalculatorForm />
     </DefaultLayout>
 </template>
