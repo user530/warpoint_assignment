@@ -5,8 +5,12 @@
 </template>
 
 <style scoped>
+@import '../assets/variables.css';
+
 header {
-    background-color: plum;
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    flex-shrink: 0;
 }
 
 h1 {
