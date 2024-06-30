@@ -1,34 +1,35 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import type { IFormField, ITariff } from '../shared/types';
-import { tariffsData as tariffs } from '@/shared/data/tariffs';
 
 interface ITariffSelection extends Pick<ITariff, 'id' | 'name'> { }
 
 interface ITariffSelectProps extends IFormField {
-    tariffsData: ITariffSelection[];
+    tariffs: ITariffSelection[];
+    modelValue: number | null;
 }
 
 // Component definitions
 const props = defineProps<ITariffSelectProps>();
-const emit = defineEmits(['tariff-selected']);
-
-// State variable
-const selectedTariffId = ref<number | null>(tariffs[0].id ?? null);
+const emit = defineEmits(['update:modelValue']);
 
 // Computed props
 const labelText = computed(() => props.label || 'Тариф:');
 const fieldId = computed(() => props.fieldId || 'calculator-tariff-selection');
 
-const emitSelection = () => emit('tariff-selected', selectedTariffId.value);
+const emitSelection = (event: Event) => {
+    const target = event.target as HTMLSelectElement;
+    emit('update:modelValue', target.value ? Number(target.value) : null);
+};
 
 </script>
 
 <template>
     <div>
         <label :for="fieldId">{{ labelText }}</label>
-        <select :id="fieldId" v-model="selectedTariffId" @change="emitSelection">
-            <option v-for="tariff in tariffsData" :key="tariff.id" :value="tariff.id">{{ tariff.name }}</option>
+        <select :id="fieldId" :value="props.modelValue" @change="emitSelection">
+            <option value="" disabled hidden>{{ props.placeholderText ?? 'Выберите тариф' }}</option>
+            <option v-for="tariff in props.tariffs" :key="tariff.id" :value="tariff.id">{{ tariff.name }}</option>
         </select>
     </div>
 </template>
