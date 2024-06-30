@@ -17,7 +17,7 @@ const fieldId = computed(() => props.fieldId || 'calculator-period-selection');
 
 const emitSelection = (e: Event) => {
     const target = e.target as HTMLSelectElement;
-    emit('update:modelValue', target.value ?? null);
+    emit('update:modelValue', parseInt(target.value) ?? null);
 };
 
 </script>
