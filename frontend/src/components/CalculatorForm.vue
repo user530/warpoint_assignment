@@ -1,53 +1,56 @@
 <script setup lang="ts">
-import type { ITariff } from '@/shared/types';
+import type { ITariff, IExchangeData } from '@/shared/types';
 import CalculatorFieldTariff from './CalculatorFieldTariff.vue';
 import CalculatorFieldCurrency from './CalculatorFieldCurrency.vue';
 import CalculatorFieldPeriod from './CalculatorFieldPeriod.vue';
-import { tariffsData, exchangeRates } from '@/shared/data';
+import { tariffsData, RubRates } from '@/shared/data';
+import { tickerFromCurrency, getDiscountForOption } from '@/shared/utils';
 import { computed, ref, watch } from 'vue';
 import { Currency } from '@/shared/enums';
 
 interface IFormValues {
     tariffId: number | null;
-    currency: Currency | null;
+    currency: keyof typeof Currency | null;
     paymentOptionId: number | null;
 }
 
 // LOAD AND VALIDATE TARIFFS
-const initialSelection: IFormValues = {
-    tariffId: tariffsData[0]?.id ?? null,
-    currency: tariffsData[0]?.baseCurrency ?? null,
-    paymentOptionId: tariffsData[0]?.paymentOptions[0]?.id ?? null
-};
+const tariffs = ref<ITariff[]>([]);
+const exchangeRates = ref<IExchangeData[]>([]);
 
-const formValues = ref<IFormValues>(initialSelection);
+// PLACEHOLDER
+tariffs.value = tariffsData;
+exchangeRates.value = RubRates;
+const formValues = ref<IFormValues>({
+    tariffId: null,
+    currency: null,
+    paymentOptionId: null,
+});
 
 // Props and handler for the tariff selection field
 const tariffFieldProps = (tariffsData as ITariff[]).map(tariff => ({ id: tariff.id, name: tariff.name }));
 const tariffSelectionHandler = (newTariffId: number) => {
-    console.log('New tariff selected');
     formValues.value.tariffId = newTariffId;
-    console.log(formValues.value);
 };
 
 const selectedTariff = computed(() => {
-    console.log('Computed selected tariff');
     return tariffsData.find((tariff) => tariff.id === formValues.value.tariffId) ?? null;
 });
 
 // Props and handler for the currency selection field 
 const currencyProps = computed(() => {
-    console.log('Computed currency props');
     return selectedTariff.value?.baseCurrency ?? Currency.RUB;
 });
 const currencySelectionHandler = (newCurrency: keyof typeof Currency) => {
-    console.log('New currency selected');
-    formValues.value.currency = Currency[newCurrency];
-    console.log(formValues.value);
+    formValues.value.currency = newCurrency;
 };
 
 const periodFieldProps = computed(() => {
-    console.log('Computed period props');
+    console.log(
+        selectedTariff.value && selectedTariff.value.paymentOptions
+            ? selectedTariff.value.paymentOptions.map(option => ({ id: option.id, paymentPeriod: option.paymentPeriod }))
+            : []
+    )
     return selectedTariff.value && selectedTariff.value.paymentOptions
         ? selectedTariff.value.paymentOptions.map(option => ({ id: option.id, paymentPeriod: option.paymentPeriod }))
         : [];
@@ -55,46 +58,66 @@ const periodFieldProps = computed(() => {
 );
 
 const periodSelectionHandler = (newPeriodId: number | null) => {
-    console.log('New period selected');
     formValues.value.paymentOptionId = newPeriodId;
-    console.log(formValues.value);
 }
+
+const exchangeRate = computed(
+    () => {
+        if (!selectedTariff.value || !formValues.value.currency || !formValues.value.paymentOptionId) return 0;
+        const baseCurrency = tickerFromCurrency(selectedTariff.value.baseCurrency);
+        const rates = exchangeRates.value.find((rate) => rate.base_code === baseCurrency);
+        if (!baseCurrency || !rates || !rates.conversion_rates) return 0;
+        const { currency } = formValues.value;
+        const rate = rates.conversion_rates[currency];
+        return rate;
+    }
+);
+
+const totalAmount = computed(() => {
+    if (!selectedTariff.value || !formValues.value || !formValues.value.paymentOptionId) return 0;
+    const selectedOption = selectedTariff.value.paymentOptions.find((option) => option.id === formValues.value.paymentOptionId);
+    return selectedOption ? selectedOption.basePrice * exchangeRate.value : 0;
+});
+
+const discount = computed(
+    () => {
+        const { paymentOptionId, currency, tariffId } = formValues.value;
+        if (!selectedTariff.value || !paymentOptionId || !currency || !tariffId) return 0;
+
+        const disc = getDiscountForOption(selectedTariff.value.paymentOptions, paymentOptionId);
+
+        return disc;
+    }
+);
 
 // Reset form values on the tariff selection
 watch(
     () => formValues.value.tariffId,
     (newTariffId: number | null) => {
-        console.log('Tarif observer fired! Updating form values');
         const selectedTariff = tariffsData.find((tariff) => tariff.id == newTariffId);
-        formValues.value.currency = !selectedTariff ? null : selectedTariff.baseCurrency;
-        formValues.value.paymentOptionId = !selectedTariff ? null : selectedTariff.paymentOptions[0].id;
-        console.log(formValues.value);
+        if (!selectedTariff) return;
+        const { baseCurrency, paymentOptions } = selectedTariff;
+        const selectedCurrency = tickerFromCurrency(baseCurrency);
+        const firstPeriodId = paymentOptions && Array.isArray(paymentOptions)
+            ? paymentOptions[0].id
+            : null;
+        formValues.value.currency = !selectedCurrency ? null : selectedCurrency;
+        formValues.value.paymentOptionId = !firstPeriodId ? null : firstPeriodId;
     }
 );
-
-watch(
-    () => formValues.value.currency,
-    (newCurrency: Currency | null) => {
-        console.log('Currency observer fired! Calculating exchange rate');
-        if (!newCurrency) return;
-        console.log(newCurrency);
-        const reqCurrency: [string, Currency] = Object.entries(Currency).find(([key, val]) => val === newCurrency) ?? ['RUB', Currency.RUB];
-        console.log(reqCurrency[0])
-        const rate = exchangeRates.conversion_rates[reqCurrency[0]];
-        console.log('Rate: ', rate);
-    }
-)
 
 </script>
 
 <template>
     <form>
-        <CalculatorFieldTariff :tariffs-data="tariffFieldProps" label="Выберите тариф:"
+        <CalculatorFieldTariff :tariffs="tariffFieldProps" v-model="formValues.tariffId" label="Тариф:"
             @tariff-selected="tariffSelectionHandler" />
-        <CalculatorFieldCurrency :base-currency="currencyProps" label="Выберите валюту:"
+        <CalculatorFieldCurrency :base-currency="currencyProps" v-model="formValues.currency" label="Валюта:"
             @currency-selected="currencySelectionHandler" />
-        <CalculatorFieldPeriod :periods="periodFieldProps" label="Выберите период оплаты:"
+        <CalculatorFieldPeriod :periods="periodFieldProps" v-model="formValues.paymentOptionId" label="Период оплаты:"
             @period-selected="periodSelectionHandler" />
+        <p>{{ totalAmount }}</p>
+        <p>{{ discount * exchangeRate }}</p>
         <CalculatorFieldTotalCost />
     </form>
 </template>
