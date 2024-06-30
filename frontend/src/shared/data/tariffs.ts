@@ -29,11 +29,11 @@ export const tariffsData: ITariff[] = [
                 paymentPeriod: PaymentPeriod.Month,
                 basePrice: 150,
             },
-            {
-                id: 2,
-                paymentPeriod: PaymentPeriod.Year,
-                basePrice: 1400,
-            },
+            // {
+            //     id: 2,
+            //     paymentPeriod: PaymentPeriod.Year,
+            //     basePrice: 1400,
+            // },
         ],
     },
 ];

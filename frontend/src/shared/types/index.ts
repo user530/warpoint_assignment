@@ -16,9 +16,10 @@ export interface ITariff {
 export interface IFormField {
     label?: string;
     fieldId?: string;
+    placeholderText?: string;
 }
 
-export interface ICurrencyResponse {
+export interface IExchangeData {
     base_code: string;
     conversion_rates: Record<string, number>;
 }

@@ -1,5 +1,5 @@
-import type { ICurrencyResponse } from '../types';
-export const exchangeRates = {
+import type { IExchangeData } from '../types';
+export const RubRates = [{
     "result": "success",
     "documentation": "https://www.exchangerate-api.com/docs",
     "terms_of_use": "https://www.exchangerate-api.com/terms",
@@ -172,4 +172,4 @@ export const exchangeRates = {
         "ZMW": 0.2872,
         "ZWL": 0.1604
     }
-} as ICurrencyResponse;
+} as IExchangeData];
