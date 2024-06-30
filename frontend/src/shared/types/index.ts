@@ -17,3 +17,8 @@ export interface IFormField {
     label?: string;
     fieldId?: string;
 }
+
+export interface ICurrencyResponse {
+    base_code: string;
+    conversion_rates: Record<string, number>;
+}
