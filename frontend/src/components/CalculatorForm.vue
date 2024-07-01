@@ -6,10 +6,9 @@ import CalculatorFieldPeriod from './CalculatorFieldPeriod.vue';
 import CalculatorFieldDisplayTotal from './CalculatorFieldDisplayTotal.vue';
 import SpinnerDefault from './SpinnerDefault.vue';
 import { tariffsData } from '@/shared/data';
-import { tickerFromCurrency, getDiscountForOption } from '@/shared/utils';
+import { tickerFromCurrency, getDiscountForOption, fetchCalculatorData } from '@/shared/utils';
 import { computed, onMounted, ref, watch } from 'vue';
 import { Currency } from '@/shared/enums';
-import axios from 'axios';
 
 interface IFormValues {
     tariffId: number | null;
@@ -110,32 +109,13 @@ watch(
 // Data fetching function
 const fetchData = async () => {
     try {
-        tariffs.value = tariffsData;
+        const {
+            tariffs: fetchedTariffs,
+            exchangeRates: fetchedRates
+        } = await fetchCalculatorData(tariffsData);
 
-        // The list of all base currencies used in the tarriffs
-        const baseCurrencies = new Set<string>();
-
-        // Iterate over all tariffs and collect all base currencies
-        tariffs.value.forEach(
-            tariff => {
-                const ticker = tickerFromCurrency(tariff.baseCurrency);
-                if (ticker) baseCurrencies.add(ticker);
-            }
-        );
-
-        // Prepare an array of promises to get all exchange rates
-        const exchangeRatesPromises = Array
-            .from(baseCurrencies)
-            .map(async (currencyTicker) => {
-
-                const response = await axios.get(`https://v6.exchangerate-api.com/v6/8d109f2f17b63adf54131107/latest/${currencyTicker}`);
-
-                if (response.data && 'result' in response.data && response.data.result)
-                    exchangeRates.value.push(response.data);
-            });
-
-        // Fetch all required exchange rates
-        await Promise.all(exchangeRatesPromises);
+        tariffs.value = fetchedTariffs;
+        exchangeRates.value = fetchedRates;
     } catch (error) {
         console.error(error);
     } finally {
