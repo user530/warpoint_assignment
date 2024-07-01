@@ -3,6 +3,7 @@ import type { ITariff, IExchangeData } from '@/shared/types';
 import CalculatorFieldTariff from './CalculatorFieldTariff.vue';
 import CalculatorFieldCurrency from './CalculatorFieldCurrency.vue';
 import CalculatorFieldPeriod from './CalculatorFieldPeriod.vue';
+import CalculatorFieldDisplayTotal from './CalculatorFieldDisplayTotal.vue';
 import { tariffsData } from '@/shared/data';
 import { tickerFromCurrency, getDiscountForOption } from '@/shared/utils';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -139,11 +140,18 @@ const fetchData = async () => {
 
 // Fetch data on load
 onMounted(fetchData)
+
+const canSubmit = computed(() => formValues.value.tariffId && formValues.value.currency && formValues.value.paymentOptionId)
+const onSubmit = (e: Event) => {
+    e.preventDefault();
+    console.log('Данные формы отправлены!')
+};
 </script>
 
 <template>
-    <div v-if="isLoading"></div>
-    <form v-else>
+    <div v-if="isLoading" class="spinner"></div>
+
+    <form v-else class="calculator-form" @submit="onSubmit">
         <CalculatorFieldTariff :tariffs="tariffFieldProps" v-model="formValues.tariffId" label="Тариф:"
             @tariff-selected="tariffSelectionHandler" />
         <CalculatorFieldCurrency :base-currency="currencyProps" v-model="formValues.currency" label="Валюта:"
@@ -151,7 +159,8 @@ onMounted(fetchData)
         <CalculatorFieldPeriod :periods="periodFieldProps" v-model="formValues.paymentOptionId" label="Период оплаты:"
             @period-selected="periodSelectionHandler" />
 
-        <p>{{ totalAmount }}</p>
-        <p>{{ discount * exchangeRate }}</p>
+        <CalculatorFieldDisplayTotal :total="totalAmount" :discount="discount * exchangeRate" />
+
+        <button type="submit" :disabled="!canSubmit">Перейти к оплате</button>
     </form>
 </template>
