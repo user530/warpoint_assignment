@@ -11,7 +11,6 @@ interface IDisplayTotalProps {
 
 const { total, discount, labelTotal, labelDiscount, fieldIdTotal, fieldIdDiscount } = defineProps<IDisplayTotalProps>();
 
-
 </script>
 
 <template>
@@ -31,3 +30,21 @@ const { total, discount, labelTotal, labelDiscount, fieldIdTotal, fieldIdDiscoun
         </div>
     </div>
 </template>
+
+<style scoped>
+.display-total {
+    min-height: 170px;
+
+    @media (max-width: 1199px) {
+        min-height: 144px;
+    }
+
+    @media (max-width: 767px) {
+        min-height: 124px;
+    }
+}
+
+input {
+    text-align: right;
+}
+</style>
