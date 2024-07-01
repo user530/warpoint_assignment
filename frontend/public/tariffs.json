@@ -1,0 +1,36 @@
+[
+    {
+        "id": 1,
+        "name": "Стандартный",
+        "baseCurrency": "RUB",
+        "paymentOptions": [
+            {
+                "id": 1,
+                "paymentPeriod": "Month",
+                "basePrice": 100
+            },
+            {
+                "id": 2,
+                "paymentPeriod": "Year",
+                "basePrice": 1000
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Продвинутый",
+        "baseCurrency": "RUB",
+        "paymentOptions": [
+            {
+                "id": 1,
+                "paymentPeriod": "Month",
+                "basePrice": 150
+            },
+            {
+                "id": 2,
+                "paymentPeriod": "Year",
+                "basePrice": 1400
+            }
+        ]
+    }
+]
