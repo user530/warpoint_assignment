@@ -4,6 +4,7 @@ import CalculatorFieldTariff from './CalculatorFieldTariff.vue';
 import CalculatorFieldCurrency from './CalculatorFieldCurrency.vue';
 import CalculatorFieldPeriod from './CalculatorFieldPeriod.vue';
 import CalculatorFieldDisplayTotal from './CalculatorFieldDisplayTotal.vue';
+import SpinnerDefault from './SpinnerDefault.vue';
 import { tariffsData } from '@/shared/data';
 import { tickerFromCurrency, getDiscountForOption } from '@/shared/utils';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -153,7 +154,7 @@ const onSubmit = (e: Event) => {
 </script>
 
 <template>
-    <div v-if="isLoading" class="spinner"></div>
+    <SpinnerDefault v-if="isLoading" />
 
     <form v-else class="calculator-form" @submit="onSubmit">
         <CalculatorFieldTariff :tariffs="tariffFieldProps" v-model="formValues.tariffId" label="Тариф:"
