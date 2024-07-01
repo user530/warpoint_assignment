@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TariffCalculator from './views/TariffCalculator.vue';
+import TariffCalculator from '@/views/TariffCalculator.vue';
 </script>
 
 <template>

@@ -1,7 +1,6 @@
+import type { ITariff, IExchangeData } from '@/shared/types';
 import axios from 'axios';
-import type { ITariff, IExchangeData } from '../types';
-import { tickerFromCurrency } from './currency';
-import { stringToCurrency, stringToPeriod } from '../utils';
+import { stringToCurrency, stringToPeriod, tickerFromCurrency } from '@/shared/utils';
 
 const API_URL = import.meta.env.VITE_EXCHANGE_RATE_API_URL;
 

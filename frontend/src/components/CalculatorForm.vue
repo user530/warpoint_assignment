@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import type { ITariff, IExchangeData } from '@/shared/types';
-import CalculatorFieldTariff from './CalculatorFieldTariff.vue';
-import CalculatorFieldCurrency from './CalculatorFieldCurrency.vue';
-import CalculatorFieldPeriod from './CalculatorFieldPeriod.vue';
-import CalculatorFieldDisplayTotal from './CalculatorFieldDisplayTotal.vue';
-import SpinnerDefault from './SpinnerDefault.vue';
-import { tariffsData } from '@/shared/data';
-import { tickerFromCurrency, getDiscountForOption, fetchCalculatorData } from '@/shared/utils';
 import { computed, onMounted, ref, watch } from 'vue';
+import { CalculatorFieldTariff, CalculatorFieldCurrency, CalculatorFieldPeriod, CalculatorFieldDisplayTotal, SpinnerDefault } from '@/components';
+import { tickerFromCurrency, getDiscountForOption, fetchCalculatorData } from '@/shared/utils';
 import { Currency } from '@/shared/enums';
 
 interface IFormValues {
@@ -28,13 +23,13 @@ const formValues = ref<IFormValues>({
 });
 
 // Props and handler for the tariff selection field
-const tariffFieldProps = (tariffsData as ITariff[]).map(tariff => ({ id: tariff.id, name: tariff.name }));
+const tariffFieldProps = computed(() => tariffs.value.map(tariff => ({ id: tariff.id, name: tariff.name })));
 const tariffSelectionHandler = (newTariffId: number) => {
     formValues.value.tariffId = newTariffId;
 };
 
 const selectedTariff = computed(() => {
-    return tariffsData.find((tariff) => tariff.id === formValues.value.tariffId) ?? null;
+    return tariffs.value.find((tariff) => tariff.id === formValues.value.tariffId) ?? null;
 });
 
 // Props and handler for the currency selection field 
@@ -94,7 +89,7 @@ const amountCurrency = computed(
 watch(
     () => formValues.value.tariffId,
     (newTariffId: number | null) => {
-        const selectedTariff = tariffsData.find((tariff) => tariff.id == newTariffId);
+        const selectedTariff = tariffs.value.find((tariff) => tariff.id == newTariffId);
         if (!selectedTariff) return;
         const { baseCurrency, paymentOptions } = selectedTariff;
         const selectedCurrency = tickerFromCurrency(baseCurrency);
@@ -112,7 +107,7 @@ const fetchData = async () => {
         const {
             tariffs: fetchedTariffs,
             exchangeRates: fetchedRates
-        } = await fetchCalculatorData(tariffsData);
+        } = await fetchCalculatorData();
 
         tariffs.value = fetchedTariffs;
         exchangeRates.value = fetchedRates;
@@ -129,7 +124,8 @@ onMounted(fetchData)
 const canSubmit = computed(() => formValues.value.tariffId && formValues.value.currency && formValues.value.paymentOptionId)
 const onSubmit = (e: Event) => {
     e.preventDefault();
-    console.log('Данные формы отправлены!')
+    alert('Данные формы отправлены (консоль)!');
+    console.log(JSON.parse(JSON.stringify(formValues.value)));
 };
 </script>
 

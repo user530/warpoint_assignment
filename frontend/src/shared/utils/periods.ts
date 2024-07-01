@@ -1,5 +1,5 @@
-import { PaymentPeriod } from '../enums';
-import type { IPaymentOption } from '../types';
+import type { IPaymentOption } from '@/shared/types';
+import { PaymentPeriod } from '@/shared/enums';
 
 const periodToMonths = (period: PaymentPeriod): number => {
     switch (period) {

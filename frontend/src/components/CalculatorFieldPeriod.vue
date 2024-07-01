@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import type { IFormField, IPaymentOption } from '../shared/types';
+import type { IFormField, IPaymentOption } from '@/shared/types';
+import { computed } from 'vue';
 
 interface IPeriodSelection extends Omit<IPaymentOption, 'basePrice'> { }
 

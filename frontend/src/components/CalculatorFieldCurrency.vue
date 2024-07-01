@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import type { IFormField } from '../shared/types';
-import { Currency } from '../shared/enums';
+import type { IFormField } from '@/shared/types';
+import { computed } from 'vue';
+import { Currency } from '@/shared/enums';
 
 interface ICurrencySelectProps extends IFormField {
     baseCurrency: Currency;

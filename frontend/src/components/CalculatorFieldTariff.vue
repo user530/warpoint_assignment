@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import type { IFormField, ITariff } from '@/shared/types';
 import { computed } from 'vue';
-import type { IFormField, ITariff } from '../shared/types';
 
 interface ITariffSelection extends Pick<ITariff, 'id' | 'name'> { }
 

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import HeaderDefault from '@/components/HeaderDefault.vue';
-import FooterDefault from '@/components/FooterDefault.vue';
+import { HeaderDefault, FooterDefault } from '@/components';
 </script>
 
 <template>

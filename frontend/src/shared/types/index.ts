@@ -1,4 +1,4 @@
-import { PaymentPeriod, Currency } from '../enums';
+import { PaymentPeriod, Currency } from '@/shared/enums';
 
 export interface IPaymentOption {
     id: number;

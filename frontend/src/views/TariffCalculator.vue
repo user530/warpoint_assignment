@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import CalculatorForm from '@/components/CalculatorForm.vue';
-import DefaultLayout from '../layouts/DefaultLayout.vue';
+import { CalculatorForm } from '@/components';
+import DefaultLayout from '@/layouts/DefaultLayout.vue';
 </script>
 
 
