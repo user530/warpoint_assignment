@@ -16,5 +16,8 @@ import FooterDefault from '@/components/FooterDefault.vue';
 <style scoped>
 .growing-main {
     flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>
