@@ -164,3 +164,116 @@ const onSubmit = (e: Event) => {
         <button type="submit" :disabled="!canSubmit">Перейти к оплате</button>
     </form>
 </template>
+
+<style>
+@import '../assets/variables.css';
+
+form.calculator-form {
+    width: min(600px, 95%);
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-white);
+    padding: 60px;
+    border-radius: 16px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+
+    @media (max-width: 1199px) {
+        padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    input,
+    select {
+        display: block;
+        width: 100%;
+        height: 44px;
+        padding-right: 16px;
+        font-size: 20px;
+        background-color: var(--color-white);
+        border: none;
+        border-bottom: 1px solid var(--color-background);
+        outline: none;
+
+        &:focus {
+            outline: none;
+            border-bottom-color: var(--color-primary-dark);
+        }
+
+        &:disabled {
+            color: var(--color-primary-dark);
+            font-weight: 700;
+        }
+
+        option {
+            background-color: inherit;
+        }
+
+        @media (max-width: 1199px) {
+            font-size: 18px;
+        }
+
+        @media (max-width: 767px) {
+            font-size: 16px;
+            height: 36px;
+        }
+
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 18px;
+        color: var(--color-on-primary);
+
+        @media (max-width: 1199px) {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 767px) {
+            font-size: 14px;
+        }
+    }
+
+    div+div {
+        margin-top: 30px;
+
+        @media (max-width: 1199px) {
+            margin-top: 16px;
+        }
+    }
+
+    button {
+        display: inline-block;
+        padding-inline: 70px;
+        margin-top: 30px;
+        margin-inline: auto;
+        height: 60px;
+        border: 2px solid var(--color-primary);
+        border-radius: 8px;
+        background-color: var(--color-primary);
+        color: var(--color-white);
+        font-size: 20px;
+
+        transition: 0.3s;
+
+        &:hover {
+            background-color: var(--color-primary-dark);
+        }
+
+        &:active {
+            background-color: var(--color-primary);
+        }
+
+        @media (max-width: 767px) {
+            height: 40px;
+            font-size: 16px;
+            padding-inline: 50px;
+        }
+    }
+}
+</style>
