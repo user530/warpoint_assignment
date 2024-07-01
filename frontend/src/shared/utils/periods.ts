@@ -28,3 +28,12 @@ export const getDiscountForOption = (paymentOptions: IPaymentOption[], selectedO
     // Calculate the discount
     return monthMultiplier * worstOption.basePrice - optionExists.basePrice;
 }
+
+export const stringToPeriod = (periodString: string): PaymentPeriod => {
+    const periodValue = PaymentPeriod[periodString as keyof typeof PaymentPeriod];
+
+    if (periodString === undefined)
+        throw new Error('String to currency - Error: Unsupported currency key!');
+
+    return periodValue;
+}

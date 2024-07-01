@@ -6,3 +6,12 @@ export const tickerFromCurrency = (currency: Currency): keyof typeof Currency | 
         ? selectedCurrency[0] as keyof typeof Currency
         : null;
 };
+
+export const stringToCurrency = (currencyString: string): Currency => {
+    const currencyValue = Currency[currencyString as keyof typeof Currency];
+
+    if (currencyValue === undefined)
+        throw new Error('String to currency - Error: Unsupported currency key!');
+
+    return currencyValue;
+}

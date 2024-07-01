@@ -1,14 +1,33 @@
 import axios from 'axios';
 import type { ITariff, IExchangeData } from '../types';
 import { tickerFromCurrency } from './currency';
+import { stringToCurrency, stringToPeriod } from '../utils';
 
 const API_URL = import.meta.env.VITE_EXCHANGE_RATE_API_URL;
 
-export const fetchCalculatorData = async (tariffsData: ITariff[]): Promise<{
+export const fetchCalculatorData = async (): Promise<{
     tariffs: ITariff[],
     exchangeRates: IExchangeData[]
 }> => {
-    const tariffs = tariffsData;
+    // Fetch tariffs (placeholder from file)
+    const tariffsResponse = await axios.get('/tariffs.json');
+
+    // Transform tariffs, changing strings to enums
+    const tariffs = (tariffsResponse
+        .data as ITariff[])
+        .map(
+            tariff => ({
+                ...tariff,
+                baseCurrency: stringToCurrency(tariff.baseCurrency),
+                paymentOptions: tariff.paymentOptions.map(
+                    option => ({
+                        ...option,
+                        paymentPeriod: stringToPeriod(option.paymentPeriod)
+                    })
+                )
+            })
+        );
+
     const exchangeRates: IExchangeData[] = [];
 
     // The list of all base currencies used in the tarriffs
