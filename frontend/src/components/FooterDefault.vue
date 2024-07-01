@@ -14,5 +14,10 @@ footer {
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
+    padding-block: 25px;
+
+    @media (max-width: 767px) {
+        padding-block: 15px;
+    }
 }
 </style>
