@@ -16,7 +16,6 @@ interface IFormValues {
     paymentOptionId: number | null;
 }
 
-// LOAD AND VALIDATE TARIFFS
 const tariffs = ref<ITariff[]>([]);
 const exchangeRates = ref<IExchangeData[]>([]);
 
@@ -72,19 +71,24 @@ const exchangeRate = computed(
 const totalAmount = computed(() => {
     if (!selectedTariff.value || !formValues.value || !formValues.value.paymentOptionId) return 0;
     const selectedOption = selectedTariff.value.paymentOptions.find((option) => option.id === formValues.value.paymentOptionId);
-    return selectedOption ? selectedOption.basePrice * exchangeRate.value : 0;
+    return selectedOption ? +(selectedOption.basePrice * exchangeRate.value).toFixed(2) : 0;
 });
 
 const discount = computed(
     () => {
         const { paymentOptionId, currency, tariffId } = formValues.value;
         if (!selectedTariff.value || !paymentOptionId || !currency || !tariffId) return 0;
-
         const disc = getDiscountForOption(selectedTariff.value.paymentOptions, paymentOptionId);
-
-        return disc;
+        return disc ? +disc.toFixed(2) : 0;
     }
 );
+
+const amountCurrency = computed(
+    () => {
+        const selectedCurrency = formValues.value.currency;
+        return selectedCurrency ? ` ${selectedCurrency}` : '';
+    }
+)
 
 // Reset form values on the tariff selection
 watch(
@@ -159,7 +163,8 @@ const onSubmit = (e: Event) => {
         <CalculatorFieldPeriod :periods="periodFieldProps" v-model="formValues.paymentOptionId" label="Период оплаты:"
             @period-selected="periodSelectionHandler" />
 
-        <CalculatorFieldDisplayTotal :total="totalAmount" :discount="discount * exchangeRate" />
+        <CalculatorFieldDisplayTotal :total="totalAmount" :discount="discount * exchangeRate"
+            :currency="amountCurrency" />
 
         <button type="submit" :disabled="!canSubmit">Перейти к оплате</button>
     </form>
